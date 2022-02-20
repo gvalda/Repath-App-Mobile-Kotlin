@@ -30,7 +30,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name="com.example.googlemapsapplication.ui.main.view.MapsActivity"
+            android:name="com.example.googlemapsapplication.utils.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.example.googlemapsapplication.ui.main.view
+package com.example.googlemapsapplication.utils
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -64,6 +64,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             )
             return
         }
+
         mMap.isMyLocationEnabled = true
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             if (location != null) {
