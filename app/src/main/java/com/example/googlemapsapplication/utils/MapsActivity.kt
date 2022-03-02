@@ -19,12 +19,10 @@ import com.example.googlemapsapplication.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.Marker
-import com.google.android.libraries.places.api.Places
 
 import android.util.Log
 
 import androidx.core.content.ContextCompat
-import com.google.android.libraries.places.api.net.PlacesClient
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -144,10 +142,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.setOnMarkerClickListener(this)
 
-        mMap.setOnMapClickListener {
+        mMap.setOnMapLongClickListener {
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(it))
 
+        }
+
+        mMap.setOnMapClickListener {
+            mMap.clear()
         }
 
         // Turn on the My Location layer and the related control on the map.
