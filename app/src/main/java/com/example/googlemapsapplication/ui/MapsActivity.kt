@@ -9,11 +9,14 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.googlemapsapplication.R
 import com.example.googlemapsapplication.databinding.ActivityMapsBinding
+import com.example.googlemapsapplication.utils.InjectorUtils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -52,6 +55,8 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewModel = MapsViewModel(InjectorUtils.mapRepository())
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
