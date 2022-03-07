@@ -1,4 +1,4 @@
-package com.example.googlemapsapplication.utils
+package com.example.googlemapsapplication.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
