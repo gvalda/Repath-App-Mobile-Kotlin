@@ -2,21 +2,26 @@ package com.example.googlemapsapplication.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.SearchView
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.googlemapsapplication.R
+import com.example.googlemapsapplication.data.ApiClient
+import com.example.googlemapsapplication.data.requests.LoginRequest
+import com.example.googlemapsapplication.data.responses.LoginResponse
 import com.example.googlemapsapplication.databinding.ActivityMapsBinding
 import com.example.googlemapsapplication.utils.InjectorUtils
+import com.example.googlemapsapplication.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,6 +31,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.IOException
 
 
@@ -44,6 +52,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private var lastKnownLocation: Location? = null
+    private lateinit  var sessionManager : SessionManager
 
 
     companion object {
@@ -54,6 +63,8 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sessionManager = SessionManager(this)
+
         super.onCreate(savedInstanceState)
 
         val viewModel = MapsViewModel(InjectorUtils.mapRepository())
@@ -94,11 +105,41 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
                 return false
             }
         })
+        if(sessionManager.fetchAuthToken().isNullOrEmpty()){
+            showLogin()
+        }else{
+            showLogout()
+        }
 
         // Retrieve the content view that renders the map.
         //setContentView(R.layout.activity_maps)
+        binding.loginBtn.setOnClickListener{
+            startActivity(Intent(this, LoginActivity::class.java))
+            showLogout()
+        }
+
+
+
+        binding.logoutBtn.setOnClickListener{
+           logout()
+            showLogin()
+        }
     }
 
+    private fun showLogin(){
+        binding.loginBtn.visibility = View.VISIBLE
+        binding.logoutBtn.visibility = View.GONE
+    }
+
+    private fun showLogout(){
+        binding.loginBtn.visibility = View.GONE
+        binding.logoutBtn.visibility = View.VISIBLE
+    }
+
+
+    private fun logout(){
+        sessionManager.clearAuthToken()
+    }
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
