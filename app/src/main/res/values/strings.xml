@@ -11,6 +11,12 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="no_account">Not have account? <b>Sing Up</b></string>
-    <string name="login">Login</string>
+    <string name="login">Sign in</string>
     <string name="logout">Logout</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="iv_cd_logo">ApplicationLogo</string>
+    <string name="user_greeting">Welcome back!</string>
+    <string name="add_new_account">I want to create an account</string>
+    <string name="reports">Reports</string>
 </resources>

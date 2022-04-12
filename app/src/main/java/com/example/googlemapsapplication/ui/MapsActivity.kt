@@ -10,15 +10,11 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.example.googlemapsapplication.R
-import com.example.googlemapsapplication.data.ApiClient
-import com.example.googlemapsapplication.data.requests.LoginRequest
-import com.example.googlemapsapplication.data.responses.LoginResponse
 import com.example.googlemapsapplication.databinding.ActivityMapsBinding
 import com.example.googlemapsapplication.utils.InjectorUtils
 import com.example.googlemapsapplication.utils.SessionManager
@@ -31,9 +27,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.IOException
 
 
@@ -232,7 +225,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
         mMap.setOnMapLongClickListener {
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(it))
-
         }
 
         mMap.setOnMapClickListener {

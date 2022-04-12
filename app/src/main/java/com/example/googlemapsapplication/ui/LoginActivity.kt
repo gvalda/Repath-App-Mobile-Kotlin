@@ -22,8 +22,6 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding:ActivityLoginBinding
 
-    private lateinit var actionBar: ActionBar
-
     private lateinit var progressDialog: ProgressDialog
 
     private var email = ""
@@ -36,9 +34,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        actionBar = supportActionBar!!
-        actionBar.title = "Login"
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Please wait")
