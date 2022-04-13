@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/googlemapsapplication/data/repository/UserRepository.kt" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/downw/Documents/Repath-App-Composer/mobile/app/src/main/res/drawable/ic_baseline_wrong_location.xml" value="0.2985" />
+        <entry key="..\:/Users/downw/Documents/Repath-App-Composer/mobile/app/src/main/res/layout/activity_maps.xml" value="0.30932971014492755" />
+      </map>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
