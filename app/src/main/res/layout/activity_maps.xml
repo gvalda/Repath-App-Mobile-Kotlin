@@ -60,19 +60,15 @@
         />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btn_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="673dp"
-        android:layout_marginEnd="297dp"
-        android:layout_marginBottom="5dp"
         android:background="#FF0000"
-        android:onClick="onReport"
+        android:layout_margin="16dp"
         android:padding="8dp"
         android:text="@string/report"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -236,7 +236,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(location))
 
-            val button: Button = findViewById(R.id.button1)
+            val button: Button = findViewById(R.id.btn_report)
             button.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
                     // Code here executes on main thread after user presses button
@@ -340,7 +340,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLong)
-                val button: Button = findViewById(R.id.button1)
+                val button: Button = findViewById(R.id.btn_report)
                 button.setOnClickListener(object : View.OnClickListener {
                     override fun onClick(v: View?) {
                         // Code here executes on main thread after user presses button
