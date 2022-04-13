@@ -4,9 +4,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.VectorDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,9 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.example.googlemapsapplication.R
-import com.example.googlemapsapplication.data.ApiClient
-import com.example.googlemapsapplication.data.requests.LoginRequest
-import com.example.googlemapsapplication.data.responses.LoginResponse
+import com.example.googlemapsapplication.Repository.ObstacleLocation
 import com.example.googlemapsapplication.databinding.ActivityMapsBinding
 import com.example.googlemapsapplication.utils.InjectorUtils
 import com.example.googlemapsapplication.utils.SessionManager
@@ -28,12 +30,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
+import okhttp3.*
 import java.io.IOException
 
 
@@ -53,7 +52,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
     // location retrieved by the Fused Location Provider.
     private var lastKnownLocation: Location? = null
     private lateinit  var sessionManager : SessionManager
-
+    private lateinit var obstacleLocation: ObstacleLocation
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -229,9 +228,22 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.setOnMarkerClickListener(this)
 
-        mMap.setOnMapLongClickListener {
+
+
+
+
+        mMap.setOnMapLongClickListener {location ->
             mMap.clear()
-            mMap.addMarker(MarkerOptions().position(it))
+            mMap.addMarker(MarkerOptions().position(location))
+
+            val button: Button = findViewById(R.id.button1)
+            button.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View?) {
+                    // Code here executes on main thread after user presses button
+                    onHTTPRequest(location)
+                    mMap.clear()
+                }
+            })
 
         }
 
@@ -245,7 +257,66 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
         // Get the current location of the device and set the position of the map.
         getDeviceLocation()
 
+
+
         setUpMap()
+    }
+
+    private fun onHTTPRequest(location: LatLng){
+
+        val roadLat = location.latitude.toString()
+        val roadLong = location.longitude.toString()
+        var full = roadLat.plus(",").plus(roadLong)
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("https://roads.googleapis.com/v1/nearestRoads?points=$full&key=AIzaSyD9y9En0zDS3fxSll0-CL8hFBzhH9lNLqg")
+            .method("GET", null)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    val strResponse = response.body?.string().toString()
+
+                    var gson = Gson()
+                    obstacleLocation = gson.fromJson(strResponse, ObstacleLocation::class.java)
+                    val obstacleLatitude = obstacleLocation.snappedPoints[0].location.latitude
+                    val obstacleLongitude = obstacleLocation.snappedPoints[0].location.longitude
+                    val obstacleLatLng = LatLng(obstacleLatitude,obstacleLongitude)
+
+                    Log.w("RESPONSE", obstacleLatLng.toString())
+
+                    this@MapsActivity.runOnUiThread {
+                        mMap.addMarker(MarkerOptions().position(obstacleLatLng)
+                            .title("Obstacle")
+                            .snippet("Hey, this is an obstacle!!!!")
+                            .icon(getBitmapDescriptor(R.drawable.ic_baseline_wrong_location)))
+                    }
+
+                }
+            }
+        })
+    }
+
+
+
+    private fun getBitmapDescriptor(id: Int): BitmapDescriptor? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val vectorDrawable = getDrawable(id) as VectorDrawable?
+            val h = vectorDrawable!!.intrinsicHeight
+            val w = vectorDrawable.intrinsicWidth
+            vectorDrawable.setBounds(0, 0, w, h)
+            val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bm)
+            vectorDrawable.draw(canvas)
+            BitmapDescriptorFactory.fromBitmap(bm)
+        } else {
+            BitmapDescriptorFactory.fromResource(id)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -269,6 +340,14 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLong)
+                val button: Button = findViewById(R.id.button1)
+                button.setOnClickListener(object : View.OnClickListener {
+                    override fun onClick(v: View?) {
+                        // Code here executes on main thread after user presses button
+                        onHTTPRequest(currentLatLong)
+                        mMap.clear()
+                    }
+                })
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 18f))
             }
         }
@@ -295,7 +374,9 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
         val markerOptions = MarkerOptions().position(currentLatLong)
         markerOptions.title("$currentLatLong")
         mMap.addMarker(markerOptions)
+
     }
 
     override fun onMarkerClick(p0: Marker) = false
 }
+

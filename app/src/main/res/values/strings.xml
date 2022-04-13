@@ -13,4 +13,5 @@
     <string name="no_account">Not have account? <b>Sing Up</b></string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="report">Report</string>
 </resources>
