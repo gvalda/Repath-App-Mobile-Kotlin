@@ -16,6 +16,7 @@
         android:theme="@style/Theme.GoogleMapsApplication"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
         <activity
             android:name=".ui.ReportsActivity"
             android:exported="false" />

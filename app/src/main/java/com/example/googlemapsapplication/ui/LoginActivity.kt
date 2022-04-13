@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
 
 
-        binding.loginBtn.setOnClickListener{
+        binding.btnLogin.setOnClickListener{
             validateData()
         }
     }

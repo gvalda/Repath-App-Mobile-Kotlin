@@ -45,8 +45,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private var lastKnownLocation: Location? = null
-    private lateinit  var sessionManager : SessionManager
-
+    private lateinit var sessionManager: SessionManager
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -98,39 +97,39 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback, GoogleMap.OnMarkerC
                 return false
             }
         })
-        if(sessionManager.fetchAuthToken().isNullOrEmpty()){
+        if (sessionManager.fetchAuthToken().isNullOrEmpty()) {
             showLogin()
-        }else{
+        } else {
             showLogout()
         }
 
-        // Retrieve the content view that renders the map.
-        //setContentView(R.layout.activity_maps)
-        binding.loginBtn.setOnClickListener{
+        binding.btnLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             showLogout()
         }
 
-
-
-        binding.logoutBtn.setOnClickListener{
-           logout()
+        binding.btnLogout.setOnClickListener {
+            logout()
             showLogin()
+        }
+
+        binding.btnReports.setOnClickListener {
+            startActivity(Intent(this, ReportsActivity::class.java))
         }
     }
 
-    private fun showLogin(){
-        binding.loginBtn.visibility = View.VISIBLE
-        binding.logoutBtn.visibility = View.GONE
+    private fun showLogin() {
+        binding.btnLogin.visibility = View.VISIBLE
+        binding.btnLogout.visibility = View.GONE
     }
 
-    private fun showLogout(){
-        binding.loginBtn.visibility = View.GONE
-        binding.logoutBtn.visibility = View.VISIBLE
+    private fun showLogout() {
+        binding.btnLogin.visibility = View.GONE
+        binding.btnLogout.visibility = View.VISIBLE
     }
 
 
-    private fun logout(){
+    private fun logout() {
         sessionManager.clearAuthToken()
     }
 
