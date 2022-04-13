@@ -148,6 +148,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
 
+
+
         mMap.setOnMapLongClickListener {location ->
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(location))
@@ -256,6 +258,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 lastLocation = location
                 val currentLatLong = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLong)
+                val button: Button = findViewById(R.id.button1)
+                button.setOnClickListener(object : View.OnClickListener {
+                    override fun onClick(v: View?) {
+                        // Code here executes on main thread after user presses button
+                        onHTTPRequest(currentLatLong)
+                        mMap.clear()
+                    }
+                })
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 18f))
             }
         }
@@ -285,6 +295,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val markerOptions = MarkerOptions().position(currentLatLong)
         markerOptions.title("$currentLatLong")
         mMap.addMarker(markerOptions)
+
     }
 
     override fun onMarkerClick(p0: Marker) = false
